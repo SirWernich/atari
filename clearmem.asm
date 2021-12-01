@@ -3,7 +3,7 @@
     seg code
     org $F000           ; define the code origin at $F000
 
-Start:
+Starts:
     sei                 ; disable interrupts
     cld                 ; disable BCD (binary coded decimal) math mode
     ldx #$FF            ; load the X register with the literal value 0xFF (255)
