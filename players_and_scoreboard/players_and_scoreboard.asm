@@ -4,6 +4,14 @@
     include "../headers/vcs.h"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; start uninitialised segments at $80 for variable declaration
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    seg.u Variables
+    org $80
+P0Height ds 1           ; defines one byte for player 0 height
+P1Height ds 1           ; defines one byte for player 1 height
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Start our ROM code segment
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     seg code
@@ -17,6 +25,10 @@ Start:
 
     lda #%1111          ; white colour
     sta COLUPF          ; write colour to playfield
+
+    lda #10
+    sta P0Height        ; store in P0Height memory location
+    sta P1Height        ; store in P1Height memory location
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; set the TIA registers for the colours of P0 and P1
@@ -74,7 +86,7 @@ ScoreboardLoop:
     sta PF1             ; store value in PF1
     sta WSYNC
     iny
-    cpy #10             ; compare Y to 10
+    cpy P0Height        ; compare Y to value in P0Height
     bne ScoreboardLoop  ; if they're not equal, loop
 
     lda #0
@@ -95,7 +107,7 @@ Player0Loop:
     sta GRP0            ; store in graphics of player 0
     sta WSYNC
     iny
-    cpy #10             ; compare Y to 10
+    cpy P1Height        ; compare Y to value in P1Height
     bne Player0Loop
 
     lda #0
